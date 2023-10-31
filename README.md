@@ -1,9 +1,16 @@
-
 # sports
 
 A list of ports to scan, fast、smart、safe.
 
 # usage
+
+### install
+
+```
+cargo install sports
+```
+
+### help
 ```
 Usage: sports [OPTIONS] --target <TARGET>
 
