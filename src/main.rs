@@ -10,6 +10,14 @@ mod scan;
 async fn main() -> Result<(), anyhow::Error> {
     let scanip_args = args::ScanIp::parse();
 
+    let socket_addresses: Vec<SocketAddr> = format!("{}:0", scanip_args.target)
+        .to_socket_addrs()?
+        .collect();
+
+    if socket_addresses.is_empty() {
+        return Err(anyhow::anyhow!("socket addresses list is empty".red()));
+    }
+
     if scanip_args.verbose {
         let ports = if scanip_args.full {
             "all the 65535 ports".yellow()
@@ -17,20 +25,17 @@ async fn main() -> Result<(), anyhow::Error> {
             "the most common 1002 ports".blue()
         };
         println!(
-            "Scanning {} of {}. Concurrency: {:?}. Timeout: {:?}s",
+            "start scanning {} of {};\n  {};\n  {};",
             &ports,
             scanip_args.target.green(),
-            scanip_args.concurrency,
-            scanip_args.timeout
+            format!("set concurrency = {}", scanip_args.concurrency)
+                .bold()
+                .cyan(),
+            format!("set timeout = {}s", scanip_args.timeout)
+                .bold()
+                .cyan()
         );
-    }
-
-    let socket_addresses: Vec<SocketAddr> = format!("{}:0", scanip_args.target)
-        .to_socket_addrs()?
-        .collect();
-
-    if socket_addresses.is_empty() {
-        return Err(anyhow::anyhow!("Socket_addresses list is empty".red()));
+        println!("-----");
     }
 
     let ports = ports::get_ports(scanip_args.full);
