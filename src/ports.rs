@@ -1,8 +1,8 @@
 pub fn get_ports(full: bool) -> Box<dyn Iterator<Item = u16>> {
     if full {
-        Box::new((1..=u16::MAX).into_iter())
+        Box::new(1..=u16::MAX)
     } else {
-        Box::new(MOST_COMMON_PORTS_1002.to_owned().into_iter())
+        Box::new(MOST_COMMON_PORTS_1002.iter().copied())
     }
 }
 
